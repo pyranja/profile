@@ -1,0 +1,24 @@
+[user]
+	email = chris.borckholder@gmail.com
+	name = Chris Borckholder
+[core]
+	excludesFile = ~/.global-gitignore
+	attributesFile = ~/.global-gitattributes
+	autocrlf = false
+	eol = lf
+[color]
+	ui = true
+
+[status]
+	submodulesummary = 1
+[push]
+	default = simple
+	followTags = true
+[pull]
+	ff = only
+
+[alias]
+	co = checkout
+
+[url "https://github.com/"]
+	insteadOf = gh:

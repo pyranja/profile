@@ -1,0 +1,18 @@
+# enable git auto handling
+* text=auto
+
+# force endings for some platform specific files
+*.sh      eol=lf
+*.xml     eol=lf
+*.json    eol=lf
+*.cfg     eol=lf
+*.md      eol=lf
+*.sql     eol=lf
+
+*.ps1     eol=crlf
+*.psm1    eol=crlf
+*.psd1    eol=crlf
+*.ps1xml  eol=crlf
+*.bat     eol=crlf
+
+*.pdf     -text
