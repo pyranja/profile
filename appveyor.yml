@@ -1,0 +1,24 @@
+# pyps build
+
+version: 0.0.{build}
+platform: x64
+
+install:
+  - cinst pester
+
+build_script:
+  - ps: ./Package-Distributable.ps1 -ModuleVersion $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
+
+test_script: 
+  - ps: ./Test-Distributable.ps1
+
+artifacts:
+  - path: ./dist/*.zip
+
+deploy:
+  - provider: GitHub
+    artifact: /*.\.zip/
+    on:
+      branch: master
+      appveyor_repo_tag: true
+
