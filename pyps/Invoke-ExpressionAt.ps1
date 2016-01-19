@@ -10,7 +10,7 @@ function Spread-Expression {
     .SYNOPSIS
         Invoke given expression in multiple paths.
     .DESCRIPTION
-        By default the target paths are read from a local ./.spread file. 
+        By default the target paths are read from a local ./.spread file.
         Each line should contain a target path. The expression is created by
         concatenating all positional arguments. Alternatively expressions
         may be passed through the pipeline.
@@ -61,7 +61,7 @@ function __HandleSingleExpression {
     [CmdletBinding()]
     Param([string]$Path, [string]$Command)
 
-    Write-Verbose "invoke $Path/$Command"
+    Write-Verbose "$Path\$Command`n"
     Push-Location $Path -StackName invoke
     if ($?) {
         try {
@@ -70,7 +70,7 @@ function __HandleSingleExpression {
             Pop-Location -StackName invoke
         }
     } else {
-        Write-Verbose "skipped $Path/$Command"
+        Write-Verbose "skipped $Path\$Command`n"
     }
 }
 
