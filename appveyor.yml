@@ -1,4 +1,4 @@
-# pyps build
+# py-profile build
 
 version: 0.0.{build}
 platform: x64
@@ -15,6 +15,9 @@ test_script:
 artifacts:
   - path: ./dist/*.zip
 
+# building tags triggers an infinite loop from github release tags
+skip_tags: true
+
 deploy:
   release: py-profile-$(APPVEYOR_BUILD_VERSION)
   description: 'personal dotfiles and ps scripts'
@@ -23,3 +26,4 @@ deploy:
     secure: CMJsFb4wYWDMhNBHSslK9SJPmRfc7vwu//9Uon7yMn/lmCnAI2PGg69/cFlQQy/L
   on:
     branch: master
+    appveyor_repo_tag: false
