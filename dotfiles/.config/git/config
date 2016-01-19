@@ -2,8 +2,8 @@
 	email = chris.borckholder@gmail.com
 	name = Chris Borckholder
 [core]
-	excludesFile = ~/.global-gitignore
-	attributesFile = ~/.global-gitattributes
+	excludesFile = ~/.config/git/ignore
+	attributesFile = ~/.config/git/attributes
 	autocrlf = false
 	eol = lf
 [color]

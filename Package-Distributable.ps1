@@ -9,8 +9,11 @@ Write-Host "packaging distributable v$moduleVersion"
 
 $ModuleName = 'PyPs'
 
-$cwd = (Join-Path (Split-Path $PSCommandPath) "dist")
-$src = (Join-Path (Split-Path $PSCommandPath) $ModuleName)
+$base = (Split-Path $PSCommandPath)
+$cwd = (Join-Path $base "dist")
+$src = (Join-Path $base $ModuleName)
+$cfg = (Join-Path $base "dotfiles")
+
 $dist = (Join-Path $cwd "$ModuleName-$ModuleVersion")
 If (Test-Path $dist) {
     Remove-Item $dist -Force -Recurse
@@ -33,6 +36,7 @@ New-ModuleManifest `
 
 # Copy the distributable files to the dist folder.
 Get-ChildItem $src -Recurse -Exclude *.Tests.* | Copy-Item -Destination $dist -Recurse
+Copy-Item -Path $cfg -Destination $dist -Recurse
 
 # Requires .NET 4.5
 Add-Type -AssemblyName "System.IO.Compression.FileSystem"
