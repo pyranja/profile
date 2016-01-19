@@ -21,6 +21,5 @@ deploy:
   provider: GitHub
   auth_token:
     secure: CMJsFb4wYWDMhNBHSslK9SJPmRfc7vwu//9Uon7yMn/lmCnAI2PGg69/cFlQQy/L
-  artifact: /*.\.zip/
   on:
     branch: master
