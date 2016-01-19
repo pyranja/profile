@@ -9,16 +9,18 @@ install:
 build_script:
   - ps: ./Package-Distributable.ps1 -ModuleVersion $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
 
-test_script: 
+test_script:
   - ps: ./Test-Distributable.ps1
 
 artifacts:
   - path: ./dist/*.zip
 
 deploy:
-  - provider: GitHub
-    artifact: /*.\.zip/
-    on:
-      branch: master
-      appveyor_repo_tag: true
-
+  release: py-profile-$(APPVEYOR_BUILD_VERSION)
+  description: 'personal dotfiles and ps scripts'
+  provider: GitHub
+  auth_token:
+    secure: CMJsFb4wYWDMhNBHSslK9SJPmRfc7vwu//9Uon7yMn/lmCnAI2PGg69/cFlQQy/L
+  artifact: /*.\.zip/
+  on:
+    branch: master
