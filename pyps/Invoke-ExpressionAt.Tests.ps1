@@ -8,6 +8,9 @@ $origin = Get-Location
 $cwd = Join-Path (Resolve-Path $env:TEMP) ([system.guid]::NewGuid().ToString())
 
 Describe "Invoke-ExpressionAt" {
+    # suppress script output
+    Mock Write-Host {}
+    Mock Write-Warning {}
 
     BeforeEach {
         $Error.Clear()

@@ -61,7 +61,7 @@ function __HandleSingleExpression {
     [CmdletBinding()]
     Param([string]$Path, [string]$Command)
 
-    Write-Verbose "$Path\$Command`n"
+    Write-Host "`n$Path\$Command`n"
     Push-Location $Path -StackName invoke
     if ($?) {
         try {
@@ -70,7 +70,7 @@ function __HandleSingleExpression {
             Pop-Location -StackName invoke
         }
     } else {
-        Write-Verbose "skipped $Path\$Command`n"
+        Write-Warning "cannot access location - skipping $Path\$Command"
     }
 }
 
