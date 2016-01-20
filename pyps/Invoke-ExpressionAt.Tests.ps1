@@ -118,9 +118,9 @@ Describe "Invoke-ExpressionAt" {
     }
 
     
-    Context "Spread-Expression" {
+    Context "Invoke-SpreadExpression" {
         It "fails if no .spread found" {
-            { Spread-Expression Get-Location } | Should Throw "Cannot find path"
+            { Invoke-SpreadExpression Get-Location } | Should Throw "Cannot find path"
         }
 
         It "executes command in each path defined in .spread" {
@@ -128,7 +128,7 @@ Describe "Invoke-ExpressionAt" {
             $actual = $(Join-Path $cwd "result")
             $(Join-Path $cwd "one"),$(Join-Path $cwd "two") | Out-File $config
             Get-Content $config | ForEach-Object { New-Item -ItemType Directory -Path $_ -Force }
-            $(Spread-Expression -PathFile $config Get-Item .).Name | Out-File $actual
+            $(Invoke-SpreadExpression -PathFile $config Get-Item .).Name | Out-File $actual
             $actual | Should Contain "one"
             $actual | Should Contain "two"
         }
@@ -138,7 +138,7 @@ Describe "Invoke-ExpressionAt" {
             $actual = $(Join-Path $cwd "result")
             $cwd | Out-File $config
             Get-Content $config | ForEach-Object { New-Item -ItemType Directory -Path $_ -Force }
-            "Write-Output test","Write-Output more" | Spread-Expression -PathFile $config | Out-File $actual
+            "Write-Output test","Write-Output more" | Invoke-SpreadExpression -PathFile $config | Out-File $actual
             $actual | Should Contain "test"
             $actual | Should Contain "more"
         }

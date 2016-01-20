@@ -3,9 +3,9 @@
     Execute shell expressions in different locations.
 #>
 
-New-Alias spread Spread-Expression
+New-Alias spread Invoke-SpreadExpression
 
-function Spread-Expression {
+function Invoke-SpreadExpression {
     <#
     .SYNOPSIS
         Invoke given expression in multiple paths.
