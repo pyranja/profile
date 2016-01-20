@@ -5,16 +5,16 @@
 [CmdletBinding()]
 Param([Parameter(Mandatory = $true)][version]$ModuleVersion)
 
-Write-Host "packaging distributable v$moduleVersion"
+$ModuleName = 'py-profile'
 
-$ModuleName = 'PyPs'
+Write-Host "packaging $ModuleName-$moduleVersion"
 
 $base = (Split-Path $PSCommandPath)
 $cwd = (Join-Path $base "dist")
-$src = (Join-Path $base $ModuleName)
+$src = (Join-Path $base "pyps")
 $cfg = (Join-Path $base "dotfiles")
 
-$dist = (Join-Path $cwd "$ModuleName-$ModuleVersion")
+$dist = (Join-Path $cwd "$ModuleName")
 If (Test-Path $dist) {
     Remove-Item $dist -Force -Recurse
 }
