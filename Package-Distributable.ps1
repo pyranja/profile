@@ -45,7 +45,7 @@ If (test-path $zipFileName) {
     Remove-Item $zipFileName -Force
 }
 $compressionLevel = [System.IO.Compression.CompressionLevel]::Optimal
-$includeBaseDirectory = $false
+$includeBaseDirectory = $true
 [System.IO.Compression.ZipFile]::CreateFromDirectory($dist, $zipFileName, $compressionLevel, $includeBaseDirectory)
 
 Write-Host "packaged as $zipFileName"
