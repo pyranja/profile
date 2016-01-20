@@ -1,19 +1,20 @@
 [core]
-	autocrlf = false
-	eol = lf
+  autocrlf = false
+  eol = lf
 [color]
-	ui = true
+  ui = true
 
 [status]
-	submodulesummary = 1
+  submodulesummary = 1
 [push]
-	default = simple
-	followTags = true
+  default = simple
+  followTags = true
 [pull]
-	ff = only
+  ff = only
 
 [alias]
-	co = checkout
+  co = checkout
+  tree = git log --graph --all --oneline --decorate
 
 [url "https://github.com/"]
-	insteadOf = gh:
+  insteadOf = gh:
