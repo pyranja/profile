@@ -1,6 +1,3 @@
-[user]
-	email = chris.borckholder@gmail.com
-	name = Chris Borckholder
 [core]
 	autocrlf = false
 	eol = lf
