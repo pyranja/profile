@@ -1,3 +1,5 @@
+# generated file - changes will be overwritten
+# edit ~/.gitconfig instead
 [core]
   autocrlf = false
   eol = lf
