@@ -36,7 +36,7 @@ New-ModuleManifest `
     -FunctionsToExport *-*
 
 # Copy non-shell resources
-$Assets = "dotfiles","project-skeleton" | foreach { Join-Path -Path $base -ChildPath $_ }
+$Assets = 'dotfiles','project-skeleton','Install-PyProfile.ps1' | foreach { Join-Path -Path $base -ChildPath $_ }
 Copy-Item -Path $Assets -Destination $assembly -Recurse
 
 # Create distributable archive (requires .NET 4.5)
