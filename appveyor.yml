@@ -7,7 +7,7 @@ install:
   - cinst pester
 
 build_script:
-  - ps: ./Package-Distributable.ps1 -ModuleVersion $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
+  - ps: ./Package-Distributable.ps1 -Version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
 
 test_script:
   - ps: ./Test-Distributable.ps1
