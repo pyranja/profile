@@ -2,7 +2,7 @@
 .SYNOPSIS
     Install the 'py-profile'.
 .DESCRIPTION
-    'py-profile' includes a powershell module with command line helpers and a 
+    'py-profile' includes a powershell module with command line helpers and a
     set of default config files.
 #>
 [CmdletBinding(SupportsShouldProcess=$true)]
