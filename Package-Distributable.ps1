@@ -37,7 +37,7 @@ New-ModuleManifest `
 
 # Copy non-shell resources
 $Assets = 'dotfiles','project-skeleton','installer/*' | foreach { Join-Path -Path $base -ChildPath $_ }
-Copy-Item -Path $Assets -Destination $assembly -Recurse
+Copy-Item -Path $Assets -Destination $assembly -Recurse -Exclude *.Tests.*
 
 # Create distributable archive (requires .NET 4.5)
 Add-Type -AssemblyName "System.IO.Compression.FileSystem"
