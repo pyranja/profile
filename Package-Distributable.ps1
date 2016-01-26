@@ -21,7 +21,8 @@ New-Item $assembly -ItemType Directory | Out-Null
 $ModuleName = 'py-ps'
 $ModuleSources = (Join-Path $base "py-ps")
 
-Copy-Item -Path $ModuleSources -Destination $assembly -Recurse -Exclude *.Tests.*
+New-Item -ItemType Directory -Path "$assembly\py-ps" -Force | Out-Null
+Get-ChildItem -Path $ModuleSources -Recurse -Exclude *.Tests.* | Copy-Item -Destination "$assembly\py-ps"
 
 New-ModuleManifest `
     -Path (Join-Path $assembly "$ModuleName\$ModuleName.psd1") `
