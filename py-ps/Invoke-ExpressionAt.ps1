@@ -61,7 +61,7 @@ function __HandleSingleExpression {
     [CmdletBinding()]
     Param([string]$Path, [string]$Command)
 
-    Write-Host "`n$Path\$Command`n"
+    Write-Host "`n$Path> $Command`n" -ForegroundColor Cyan
     Push-Location $Path -StackName invoke
     if ($?) {
         try {
