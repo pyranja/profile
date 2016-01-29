@@ -10,7 +10,7 @@ $results = (Join-Path $cwd 'test-results.xml')
 New-Item -ItemType Directory $cwd -Force | Out-Null
 
 Import-Module Pester
-Invoke-Pester -OutputFile $results -OutputFormat NUnitXml -EnableExit -Strict
+Invoke-Pester -OutputFile $results -OutputFormat NUnitXml -EnableExit -Strict 2>$null 3>$null
 $success = $?
 
 If ($Env:APPVEYOR_JOB_ID) {
