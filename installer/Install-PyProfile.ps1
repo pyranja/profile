@@ -62,6 +62,7 @@ function __InstallPyPs {
     __Report "py-ps module" $Source $Target
 
     If (Test-Path $Target) {
+        Remove-Item -Path $(Join-Path $Target py-ps) -Recurse
         Copy-Item -Path $Source -Destination $Target -Recurse -Force
     } Else {
         # avoid copying if module folder is not existing

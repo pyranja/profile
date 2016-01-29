@@ -38,6 +38,15 @@ Describe "Install-PyProfile" {
         Get-Content TestDrive:\target\Documents\WindowsPowerShell\Modules\py-ps\py-ps.ps1 | Should Be "test"
     }
 
+    it "clears an existing py-ps module installation" {
+        New-Item -ItemType Directory TestDrive:\target\Documents\WindowsPowerShell\Modules\py-ps
+        Set-Content -Path TestDrive:\target\Documents\WindowsPowerShell\Modules\py-ps\old__py-ps.ps1 -Value "remove me"
+
+        __RunInstaller
+
+        "TestDrive:\target\Documents\WindowsPowerShell\Modules\py-ps\old__py-ps.ps1" | Should Not Exist
+    }
+
     it "skips module installation if default powershell module path does not exist" {
         { __RunInstaller -WarningAction Stop } | Should Throw "default module path not found"
     }
