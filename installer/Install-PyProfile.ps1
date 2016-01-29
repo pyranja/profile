@@ -15,23 +15,29 @@ function main {
     [CmdletBinding()]
     Param()
 
+    __InstallDotfiles
+    __InstallPyPs
+    __InstallProfileLoader
+}
+
+function __InstallDotfiles {
+    [CmdletBinding()]
+    Param()
+
     $Source = (Join-Path $SourceBase dotfiles\*)
     $Target = $TargetBase
+
     __Report "dotfiles" $Source $Target
+
     Copy-Item -Path $Source -Destination $Target -Recurse -Force
-
-    $Source = (Join-Path $SourceBase py-ps)
-    $Target = (Join-Path $TargetBase Documents\WindowsPowerShell\Modules)
-    __InstallPyPs $Source $Target
-
-    $Source = (Join-Path $SourceBase ProfileLoader.ps1)
-    $Target = $PROFILE
-    __InstallProfileLoader $Source $Target
 }
 
 function __InstallProfileLoader {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact='High')]
-    Param($Source, $Target)
+    Param()
+
+    $Source = (Join-Path $SourceBase ProfileLoader.ps1)
+    $Target = $PROFILE
 
     __Report "profile loader" $Source $Target
 
@@ -57,7 +63,10 @@ function __InstallProfileLoader {
 
 function __InstallPyPs {
     [CmdletBinding()]
-    Param($Source, $Target)
+    Param()
+
+    $Source = (Join-Path $SourceBase py-ps)
+    $Target = (Join-Path $TargetBase Documents\WindowsPowerShell\Modules)
 
     __Report "py-ps module" $Source $Target
 
