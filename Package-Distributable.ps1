@@ -22,7 +22,7 @@ $ModuleName = 'py-ps'
 $ModuleSources = (Join-Path $base "py-ps")
 
 New-Item -ItemType Directory -Path "$assembly\py-ps" -Force | Out-Null
-Get-ChildItem -Path $ModuleSources -Recurse -Exclude *.Tests.* | Copy-Item -Destination "$assembly\py-ps"
+Get-ChildItem -Path $ModuleSources -Exclude *.Tests.* | Copy-Item -Recurse -Destination "$assembly\py-ps"
 
 New-ModuleManifest `
     -Path (Join-Path $assembly "$ModuleName\$ModuleName.psd1") `
@@ -32,7 +32,7 @@ New-ModuleManifest `
     -Copyright 'This is free and unencumbered software released into the public domain.' `
     -Description 'Personal dotfiles and utilities.' `
     -PowerShellVersion '3.0' `
-    -NestedModules (Get-ChildItem $ModuleSources -Exclude *.psd1,*.Tests.* | % { $_.Name }) `
+    -NestedModules $(Get-ChildItem "$assembly\py-ps" -Recurse -Include *.ps1 | % { $_.Name }) `
     -CmdletsToExport *-* `
     -FunctionsToExport *-*
 
