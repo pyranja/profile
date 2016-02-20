@@ -3,7 +3,7 @@
     Package the pyps module
 #>
 [CmdletBinding()]
-Param([Parameter(Mandatory = $true)][version]$Version)
+Param([Parameter(Mandatory=$false)][version]$Version = "0.0.0")
 
 $PackageName = 'py-profile'
 
