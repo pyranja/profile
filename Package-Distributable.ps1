@@ -34,7 +34,9 @@ New-ModuleManifest `
     -PowerShellVersion '3.0' `
     -NestedModules $(Get-ChildItem "$assembly\py-ps" -Recurse -Include *.ps1 | % { $_.Name }) `
     -CmdletsToExport *-* `
-    -FunctionsToExport *-*
+    -FunctionsToExport *-* `
+    -AliasesToExport '__none' `
+    -VariablesToExport '__none'
 
 # Copy non-shell resources
 $Assets = 'dotfiles','project-skeleton','installer/*' | foreach { Join-Path -Path $base -ChildPath $_ }

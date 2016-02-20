@@ -3,8 +3,6 @@
     Execute shell expressions in different locations.
 #>
 
-New-Alias spread Invoke-SpreadExpression
-
 function Invoke-SpreadExpression {
     <#
     .SYNOPSIS
