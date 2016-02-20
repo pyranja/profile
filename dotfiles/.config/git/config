@@ -16,7 +16,7 @@
 
 [alias]
   co = checkout
-  tree = git log --graph --all --oneline --decorate
+  tree = log --graph --all --oneline --decorate
 
 [url "https://github.com/"]
   insteadOf = gh:
