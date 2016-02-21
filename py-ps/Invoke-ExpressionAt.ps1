@@ -3,6 +3,8 @@
     Execute shell expressions in different locations.
 #>
 
+Set-StrictMode -Version Latest
+
 function Invoke-SpreadExpression {
     <#
     .SYNOPSIS

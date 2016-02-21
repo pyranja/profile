@@ -3,6 +3,8 @@
     Tooling for installing and updating of py-profile
 #>
 
+Set-StrictMode -Version Latest
+
 function Get-LatestVersion {
     <#
     .SYNOPSIS

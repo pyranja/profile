@@ -5,6 +5,8 @@
 [CmdletBinding()]
 Param()
 
+Set-StrictMode -Version Latest
+
 $cwd = (Join-Path '.' 'dist')
 $results = (Join-Path $cwd 'test-results.xml')
 New-Item -ItemType Directory $cwd -Force | Out-Null

@@ -3,6 +3,8 @@
     Project bootstrapping.
 #>
 
+Set-StrictMode -Version Latest
+
 # project skeleton is installed besides module
 $ProjectSkeletonLocation = $(Join-Path $(Split-Path -Parent $PSCommandPath) project-skeleton)
 

@@ -5,6 +5,8 @@
 [CmdletBinding()]
 Param([Parameter(Mandatory=$false)][version]$Version = "0.0.0")
 
+Set-StrictMode -Version Latest
+
 $PackageName = 'py-profile'
 
 Write-Host "packaging $PackageName-$Version"

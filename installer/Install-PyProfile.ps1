@@ -11,6 +11,8 @@ Param(
     [Parameter(Mandatory=$False)][string]$TargetBase = (Resolve-Path ~)
 )
 
+Set-StrictMode -Version Latest
+
 function main {
     [CmdletBinding()]
     Param()
