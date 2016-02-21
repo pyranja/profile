@@ -20,3 +20,51 @@ Describe "Get-LatestVersion" {
         { Get-LatestVersion -ErrorAction Stop } | Should Throw
     }
 }
+
+Describe "Update-Profile" {
+
+    BeforeEach {
+        Mock Get-LatestVersion { [Version]'9.9.9' }
+    }
+
+    Context "up to date" {
+        It "does nothing" {
+            Mock __version { [Version]'9.9.9' }
+            Mock __fetchRelease { }
+            Update-Profile
+            Assert-MockCalled __fetchRelease -Exactly 0
+        }
+    }
+
+    Context "outdated" {
+        BeforeEach {
+            Mock __version { [Version]'1.0.0' }
+            Mock __fetchRelease { }
+            New-Item -ItemType Directory -Path TestDrive:\release\py-profile
+            # fake installer script
+            "New-Item -Type File -Path TestDrive:\release\installer_called" | Out-File -FilePath TestDrive:\release\py-profile\Install-PyProfile.ps1
+        }
+
+        AfterEach {
+            Remove-Item TestDrive:\release -Force -Recurse -ErrorAction SilentlyContinue
+        }
+
+        It "downloads the release" {
+            Update-Profile -Cwd TestDrive:\release
+            Assert-MockCalled __fetchRelease -Scope It
+        }
+
+        It "invokes the installer" {
+            Update-Profile -Cwd TestDrive:\release
+            "TestDrive:\release\installer_called" | Should Exist
+        }
+    }
+}
+
+Describe "__fetchRelease" {
+    It "downloads and extracts release zip to target folder" {
+        __fetchRelease -Path TestDrive:\release\
+        "TestDrive:\release\py-profile-*.zip" | Should Exist
+        "TestDrive:\release\py-profile\Install-PyProfile.ps1" | Should Exist
+    }
+}
