@@ -83,11 +83,11 @@ Describe "Install-PyProfile" {
 
     it "must not replace existing profile if it is a loader already" {
         # loader implementation embeds a magic comment to detect it with high probability
-        New-Item -Type File -Path $PROFILE -Value "RSUjN2ipQNJGgIkEZoJXkaaIRr0mTz86zW5fFXiA3ymGXLfbdu" -Force
+        New-Item -Type File -Path $PROFILE -Value "# RSUjN2ipQNJGgIkEZoJXkaaIRr0mTz86zW5fFXiA3ymGXLfbdu #" -Force
 
         __RunInstaller
 
         "TestDrive:\target\.config\powershell\default_profile.ps1" | Should Not Exist
-        Get-Content $PROFILE | Should Be "RSUjN2ipQNJGgIkEZoJXkaaIRr0mTz86zW5fFXiA3ymGXLfbdu"
+        Get-Content $PROFILE | Should Be "# RSUjN2ipQNJGgIkEZoJXkaaIRr0mTz86zW5fFXiA3ymGXLfbdu #"
     }
 }
