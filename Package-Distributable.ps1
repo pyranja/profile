@@ -34,6 +34,7 @@ New-ModuleManifest `
     -Copyright 'This is free and unencumbered software released into the public domain.' `
     -Description 'Personal dotfiles and utilities.' `
     -PowerShellVersion '3.0' `
+    -DefaultCommandPrefix 'Py' `
     -NestedModules $(Get-ChildItem "$assembly\py-ps" -Recurse -Include *.ps1 | % { $_.Name }) `
     -CmdletsToExport *-* `
     -FunctionsToExport *-* `
