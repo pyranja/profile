@@ -44,13 +44,12 @@ function Update-Profile {
 
     If ($CurrentVersion -ge $LatestVersion) {
         Write-Host "Already up to date (v$CurrentVersion)"
-        return $false
+    } Else {
+        Write-Host "Updating v$CurrentVersion -> v$LatestVersion"
+        # TODO confirm upgrade
+        __fetchRelease $Cwd
+        Invoke-Expression "$Cwd\py-profile\Install-PyProfile.ps1"
     }
-
-    Write-Host "Updating v$CurrentVersion -> v$LatestVersion"
-    # TODO confirm upgrade
-    __fetchRelease $Cwd
-    Invoke-Expression "$Cwd\py-profile\Install-PyProfile.ps1"
 }
 
 function __version {
