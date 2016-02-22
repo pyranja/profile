@@ -34,7 +34,7 @@ function Update-Profile {
     .PARAMETER Cwd
         Override the upgrade working directory (defaults to a temporary folder)
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact='High')]
     Param(
         [Parameter(Mandatory=$false)]$Cwd = $( Join-Path (Resolve-Path $Env:TEMP) ([system.guid]::NewGuid().ToString()) )
     )
@@ -45,10 +45,10 @@ function Update-Profile {
     If ($CurrentVersion -ge $LatestVersion) {
         Write-Host "Already up to date (v$CurrentVersion)"
     } Else {
-        Write-Host "Updating v$CurrentVersion -> v$LatestVersion"
-        # TODO confirm upgrade
-        __fetchRelease $Cwd
-        Invoke-Expression "$Cwd\py-profile\Install-PyProfile.ps1"
+        If ($PSCmdlet.ShouldProcess("py-profile", "Upgrade v$CurrentVersion -> v$LatestVersion")) {
+            __fetchRelease $Cwd -Confirm:$false
+            Invoke-Expression "$Cwd\py-profile\Install-PyProfile.ps1"
+        }
     }
 }
 
@@ -57,7 +57,7 @@ function __version {
 }
 
 function __fetchRelease {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     Param([string]$Path)
 
     New-Item -ItemType Directory -Path $Path -Force | Out-Null

@@ -33,7 +33,7 @@ Describe "Update-Profile" {
         It "does nothing" {
             Mock __version { [Version]'9.9.9' }
             Mock __fetchRelease { }
-            Update-Profile
+            Update-Profile -Confirm:$false
             Assert-MockCalled __fetchRelease -Exactly 0
         }
     }
@@ -52,12 +52,12 @@ Describe "Update-Profile" {
         }
 
         It "downloads the release" {
-            Update-Profile -Cwd TestDrive:\release
+            Update-Profile -Confirm:$false -Cwd TestDrive:\release
             Assert-MockCalled __fetchRelease -Scope It
         }
 
         It "invokes the installer" {
-            Update-Profile -Cwd TestDrive:\release
+            Update-Profile -Confirm:$false -Cwd TestDrive:\release
             "TestDrive:\release\installer_called" | Should Exist
         }
     }
