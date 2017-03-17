@@ -5,6 +5,7 @@
 [CmdletBinding()]
 Param([Parameter(Mandatory=$false)][version]$Version = "0.0.0")
 
+#Requires -Version 5
 Set-StrictMode -Version Latest
 
 $PackageName = 'py-profile'

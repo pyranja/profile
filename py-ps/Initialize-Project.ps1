@@ -3,6 +3,7 @@
     Project bootstrapping.
 #>
 
+#Requires -Version 5
 Set-StrictMode -Version Latest
 
 # project skeleton is installed besides module

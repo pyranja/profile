@@ -1,3 +1,4 @@
+#Requires -Version 5
 Set-StrictMode -Version Latest
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path

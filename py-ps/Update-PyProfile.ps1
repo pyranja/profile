@@ -3,6 +3,7 @@
     Tooling for installing and updating of py-profile
 #>
 
+#Requires -Version 5
 Set-StrictMode -Version Latest
 
 function Get-LatestVersion {

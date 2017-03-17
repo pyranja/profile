@@ -3,6 +3,7 @@
     Execute shell expressions in different locations.
 #>
 
+#Requires -Version 5
 Set-StrictMode -Version Latest
 
 function Invoke-SpreadExpression {

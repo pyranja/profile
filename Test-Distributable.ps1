@@ -5,6 +5,7 @@
 [CmdletBinding()]
 Param()
 
+#Requires -Version 5
 Set-StrictMode -Version Latest
 
 $cwd = (Join-Path '.' 'dist')
