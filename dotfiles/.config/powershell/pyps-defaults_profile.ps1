@@ -4,3 +4,6 @@ Import-Module -Name py-ps
 
 # Register default aliases for py-ps commands
 New-Alias spread Invoke-PySpreadExpression
+
+# force modern tls version for all web requests
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
