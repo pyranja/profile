@@ -7,6 +7,8 @@
 *.xml     eol=lf
 *.json    eol=lf
 *.sql     eol=lf
+*.yaml    eol=lf
+*.yml     eol=lf
 
 *.ps1     eol=crlf
 *.psm1    eol=crlf
