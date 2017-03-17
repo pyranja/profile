@@ -23,7 +23,7 @@ deploy:
   description: 'personal dotfiles and ps scripts'
   provider: GitHub
   auth_token:
-    secure: CMJsFb4wYWDMhNBHSslK9SJPmRfc7vwu//9Uon7yMn/lmCnAI2PGg69/cFlQQy/L
+    secure: McXn11nJ4l06C283bftRirmxi8bEa2exPp3JfCaVfipZUZ5IUU6570Y6Y0CwKkEu
   on:
     branch: master
     appveyor_repo_tag: false
