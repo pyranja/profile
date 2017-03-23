@@ -4,13 +4,14 @@ version: 0.0.{build}
 platform: x64
 
 install:
-  - cinst pester
+  - ps: Install-Module psake
+  - ps: Install-Module pester
 
 build_script:
-  - ps: ./Package-Distributable.ps1 -Version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
+  - ps: Invoke-psake -taskList Clean, Package -properties @{"version"="$Env:APPVEYOR_BUILD_VERSION"} -ErrorAction Stop
 
 test_script:
-  - ps: ./Test-Distributable.ps1
+  - ps: Invoke-psake -taskList CiTest -properties @{"version"="$Env:APPVEYOR_BUILD_VERSION"} -ErrorAction Continue
 
 artifacts:
   - path: ./dist/*.zip
