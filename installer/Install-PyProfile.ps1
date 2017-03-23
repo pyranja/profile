@@ -11,6 +11,7 @@ Param(
     [Parameter(Mandatory=$False)][string]$TargetBase = (Resolve-Path ~)
 )
 
+#Requires -Version 5 -RunAsAdministrator
 Set-StrictMode -Version Latest
 
 function main {
