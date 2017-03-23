@@ -89,12 +89,18 @@ Describe "Invoke-ExpressionAt" {
             Assert-MockCalled PipePathsCommand -Times 3 -Exactly
         }
 
+        It "fails on first target location that is not accessible" {
+            function FailPathCommand {}
+            Mock FailPathCommand {}
+            { $cwd, "/notthere", $cwd | Invoke-ExpressionAt -Command FailPathCommand } | Should Throw "Cannot find path"
+            Assert-MockCalled FailPathCommand -Times 1 -Exactly
+        }
+
         It "skips missing paths" {
             function SkipPathCommand {}
             Mock SkipPathCommand {}
-            $cwd,"/notthere",$cwd  | Invoke-ExpressionAt -Command SkipPathCommand
+            $cwd,"/notthere",$cwd  | Invoke-ExpressionAt -ErrorAction Continue -Command SkipPathCommand
             Assert-MockCalled SkipPathCommand -Times 2 -Exactly
-            $Error[0] | Should Match "Cannot find Path"
         }
 
         It "accepts PSPath from piped gci" {
@@ -111,12 +117,18 @@ Describe "Invoke-ExpressionAt" {
             Assert-MockCalled ListPathsCommand -Times 3 -Exactly
         }
 
+        It "fails on first target location that is not accessible" {
+            function ListFailPathCommand {}
+            Mock ListFailPathCommand {}
+            { Invoke-ExpressionAt -Path $cwd,"/notthere",$cwd  -Command ListFailPathCommand } | Should Throw "Cannot find path"
+            Assert-MockCalled ListFailPathCommand -Times 1 -Exactly
+        }
+
         It "skips missing paths" {
             function ListSkipPathCommand {}
             Mock ListSkipPathCommand {}
-            Invoke-ExpressionAt -Path $cwd,"/notthere",$cwd -Command ListSkipPathCommand
+            Invoke-ExpressionAt -Path $cwd,"/notthere",$cwd -ErrorAction Continue -Command ListSkipPathCommand
             Assert-MockCalled ListSkipPathCommand -Times 2 -Exactly
-            $Error[0] | Should Match "Cannot find Path"
         }
     }
 
