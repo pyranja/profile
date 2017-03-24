@@ -92,9 +92,9 @@ Describe "Invoke-ExpressionAt" {
         It "skips missing paths" {
             function SkipPathCommand {}
             Mock SkipPathCommand {}
-            $cwd,"/notthere",$cwd  | Invoke-ExpressionAt -Command SkipPathCommand
+            $cwd,"/notthere",$cwd  | Invoke-ExpressionAt -ErrorAction Continue -ErrorVariable pipe_error -Command SkipPathCommand
             Assert-MockCalled SkipPathCommand -Times 2 -Exactly
-            $Error[0] | Should Match "Cannot find Path"
+            $pipe_error[0] | Should Match "Cannot find Path"
         }
 
         It "accepts PSPath from piped gci" {
@@ -114,9 +114,9 @@ Describe "Invoke-ExpressionAt" {
         It "skips missing paths" {
             function ListSkipPathCommand {}
             Mock ListSkipPathCommand {}
-            Invoke-ExpressionAt -Path $cwd,"/notthere",$cwd -Command ListSkipPathCommand
+            Invoke-ExpressionAt -Path $cwd,"/notthere",$cwd -ErrorAction Continue -ErrorVariable pipe_error -Command ListSkipPathCommand
             Assert-MockCalled ListSkipPathCommand -Times 2 -Exactly
-            $Error[0] | Should Match "Cannot find Path"
+            $pipe_error[0] | Should Match "Cannot find Path"
         }
     }
 
