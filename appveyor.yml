@@ -11,7 +11,7 @@ build_script:
   - ps: Invoke-Build Clean, Package -version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
 
 test_script:
-  - ps: Invoke-psake CiTest -version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Continue
+  - ps: Invoke-Build CiTest -version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Continue
 
 artifacts:
   - path: ./dist/*.zip
