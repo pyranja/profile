@@ -4,14 +4,14 @@ version: 0.0.{build}
 platform: x64
 
 install:
-  - ps: Install-Module psake
+  - ps: Install-Module InvokeBuild
   - ps: Install-Module pester
 
 build_script:
-  - ps: Invoke-psake -taskList Clean, Package -properties @{"version"="$Env:APPVEYOR_BUILD_VERSION"} -ErrorAction Stop
+  - ps: Invoke-Build Clean, Package -version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
 
 test_script:
-  - ps: Invoke-psake -taskList CiTest -properties @{"version"="$Env:APPVEYOR_BUILD_VERSION"} -ErrorAction Continue
+  - ps: Invoke-psake CiTest -version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Continue
 
 artifacts:
   - path: ./dist/*.zip

@@ -1,29 +1,37 @@
 <#
-    .SYNOPSIS profile build script
+.Synopsis
+	profile build script.
+
+.Description
+	TODO: Declare build script parameters as usual by param().
+	The parameters are specified for Invoke-Build on invoking.
 #>
 
-#Requires -Version 5 -RunAsAdministrator
+[CmdletBinding()]
+param(
+    [Parameter(Mandatory = $false)][Version]$version = "0.0.0"
+)
+
+#Requires -Version 5
 Set-StrictMode -Version "Latest"
 
-Properties {
-    $package_name = 'py-profile'
-    $version = [Version]"0.0.0"
-    $workspace = $(Join-Path $PSScriptRoot "dist")
-}
+$package_name = 'py-profile'
+$workspace = $(Join-Path $PSScriptRoot "dist")
 
-FormatTaskName "profile::{0}"
+task . Package, Test
 
-Task Default -Depends Package, Test
-
-Task Clean -description "clear build output" {
+# Synopsis: clear build output
+task Clean {
     Remove-Item -Path $workspace -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
 }
 
-Task Init -description "create build workspace" {
+# Synopsis: create build workspace
+task Init {
     New-Item -Path $workspace -ItemType Directory -Force | Out-Null
 }
 
-Task Assemble -depends Init -description "prepare profile contents for packaging" {
+# Synopsis: prepare profile contents for packaging
+task Assemble Init, {
     $assembly = (Join-Path $workspace $package_name)
     Remove-Item -Path $assembly -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
     New-Item -Path $assembly -ItemType Directory | Out-Null
@@ -55,18 +63,21 @@ Task Assemble -depends Init -description "prepare profile contents for packaging
     Copy-Item -Path $assets -Destination $assembly -Recurse -Exclude *.Tests.*
 }
 
-Task Package -depends Assemble -description "package profile as zip file" {
+# Synopsis: package profile as zip file
+task Package Assemble, {
     $zip_file = (Join-Path $workspace "$package_name-$version.zip")
     Remove-Item -Path $zip_file -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
 
     Compress-Archive -Path $(Join-Path $workspace $package_name) -DestinationPath $zip_file -CompressionLevel Optimal
 }
 
-Task Test -depends Init -description "run unit tests" {
+# Synopsis: run unit tests
+task Test Init, {
     Invoke-Pester -Strict 2>$null 3>$null
 }
 
-Task CiTest -depends Init -description "run unit tests with ci configuration" {
+# Synopsis: run unit tests with ci configuration
+task CiTest Init, {
     $results = Join-Path $workspace 'test-results.xml'
 
     Invoke-Pester -OutputFile $results -OutputFormat NUnitXml -EnableExit -Strict 2>$null 3>$null
