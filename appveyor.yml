@@ -25,7 +25,6 @@ environment:
 
 before_deploy:
   - ps: nuget sources Add -Name bintray -Source https://api.bintray.com/nuget/pyranja/py-get -UserName pyranja -Password $Env:bintray_api_key
-  - ps: nuget setapikey pyranja:$Env:bintray_api_key -Source bintray
 
 deploy:
   - provider: GitHub
@@ -40,7 +39,7 @@ deploy:
   - provider: NuGet
     server: https://api.bintray.com/nuget/pyranja/py-get
     api_key:
-      secure: /EwVqeAku0ElP5+mpr8nYlRDPKgNAFMl35yV5RFmcObciYlgyIwzM2aJeLW4qbmj
+      secure: j/VYazBzQe6lODyR+5Wp8T7unp1+UbJ5t3Jx09/Wr7Mb6DXnLcd+VWPR11XB0oApFUzIoMQIawka/xkB/a3Hug==
     skip_symbols: true
     on:
       branch: master
