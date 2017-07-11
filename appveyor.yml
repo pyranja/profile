@@ -19,6 +19,14 @@ artifacts:
 # building tags triggers an infinite loop from github release tags
 skip_tags: true
 
+environment:
+  bintray_api_key:
+    secure: /EwVqeAku0ElP5+mpr8nYlRDPKgNAFMl35yV5RFmcObciYlgyIwzM2aJeLW4qbmj
+
+before_deploy:
+  - ps: nuget sources Add -Name bintray -Source https://api.bintray.com/nuget/pyranja/py-get -UserName pyranja -Password $bintray_api_key
+  - ps: nuget setapikey pyranja:$bintray_api_key -Source bintray
+
 deploy:
   - provider: GitHub
     release: py-profile-$(APPVEYOR_BUILD_VERSION)
