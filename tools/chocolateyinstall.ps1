@@ -7,7 +7,7 @@
 #>
 [CmdletBinding(SupportsShouldProcess, ConfirmImpact='High')]
 Param(
-    [Parameter(Mandatory=$False)][string]$SourceBase = (Split-Path $PSCommandPath),
+    [Parameter(Mandatory=$False)][string]$SourceBase = (Join-Path $PSScriptRoot '..' -Resolve),
     [Parameter(Mandatory=$False)][string]$TargetBase = (Resolve-Path ~)
 )
 
@@ -39,7 +39,7 @@ function __InstallProfileLoader {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact='High')]
     Param()
 
-    $Source = (Join-Path $SourceBase ProfileLoader.ps1)
+    $Source = (Join-Path $SourceBase tools\ProfileLoader.ps1)
     $Target = $PROFILE
 
     __Report "profile loader" $Source $Target

@@ -8,23 +8,32 @@ install:
   - ps: Install-Module pester
 
 build_script:
-  - ps: Invoke-Build Clean, Package -version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
+  - ps: Invoke-Build Clean, Assemble -version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
 
 test_script:
   - ps: Invoke-Build CiTest -version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Continue
 
 artifacts:
-  - path: ./dist/*.zip
+  - path: ./dist/*.nupkg
 
 # building tags triggers an infinite loop from github release tags
 skip_tags: true
 
 deploy:
-  release: py-profile-$(APPVEYOR_BUILD_VERSION)
-  description: 'personal dotfiles and ps scripts'
-  provider: GitHub
-  auth_token:
-    secure: McXn11nJ4l06C283bftRirmxi8bEa2exPp3JfCaVfipZUZ5IUU6570Y6Y0CwKkEu
-  on:
-    branch: master
-    appveyor_repo_tag: false
+  - provider: GitHub
+    release: py-profile-$(APPVEYOR_BUILD_VERSION)
+    description: 'personal dotfiles and ps scripts'
+    auth_token:
+      secure: McXn11nJ4l06C283bftRirmxi8bEa2exPp3JfCaVfipZUZ5IUU6570Y6Y0CwKkEu
+    on:
+      branch: master
+      appveyor_repo_tag: false
+
+  - provider: nuget
+    server: https://chocolatey.org/
+    api_key:
+      secure: ZtdZPdqvVtzPKmd8raL+K10y+1qbjqGSsarHTBH5hfV0Vu86sQF16gZzTR7xGIQv
+    skip_symbols: true
+    on:
+      branch: master
+      appveyor_repo_tag: false

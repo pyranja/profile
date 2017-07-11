@@ -18,7 +18,7 @@ Set-StrictMode -Version "Latest"
 $package_name = 'py-profile'
 $workspace = $(Join-Path $PSScriptRoot "dist")
 
-task . Package, Test
+task . Assemble, Test
 
 # Synopsis: clear build output
 task Clean {
@@ -59,16 +59,12 @@ task Assemble Init, {
         -VariablesToExport '__none'
 
     # Copy non-shell resources
-    $assets = 'dotfiles', 'installer/*' | ForEach-Object { Join-Path -Path $PSScriptRoot -ChildPath $_ }
-    Copy-Item -Path $assets -Destination $assembly -Recurse -Exclude *.Tests.*
-}
+    $tools = 'dotfiles', 'tools' | ForEach-Object { Join-Path -Path $PSScriptRoot -ChildPath $_ }
+    Copy-Item -Path $tools -Destination $assembly -Recurse -Exclude *.Tests.*
+    Copy-Item -Path 'py-profile.nuspec' -Destination $assembly
 
-# Synopsis: package profile as zip file
-task Package Assemble, {
-    $zip_file = (Join-Path $workspace "$package_name-$version.zip")
-    Remove-Item -Path $zip_file -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
-
-    Compress-Archive -Path $(Join-Path $workspace $package_name) -DestinationPath $zip_file -CompressionLevel Optimal
+    # package
+    choco pack $(Join-Path -Path $assembly -ChildPath 'py-profile.nuspec' -Resolve) --version=$version --out $workspace
 }
 
 # Synopsis: run unit tests

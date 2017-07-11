@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <!-- == PACKAGE SPECIFIC SECTION == -->
+    <id>py-profile</id>
+    <version>0.0.0</version>
+    <packageSourceUrl>https://github.com/pyranja/profile</packageSourceUrl>
+    <owners>Chris Borckholder</owners>
+    <!-- ============================== -->
+
+    <!-- == SOFTWARE SPECIFIC SECTION == -->
+    <title>py-profile (Install)</title>
+    <authors>Chris Borckholder</authors>
+    <projectUrl>https://github.com/pyranja/profile</projectUrl>
+    <!--<iconUrl>http://cdn.rawgit.com/__REPLACE_YOUR_REPO__/master/icons/py-profile.png</iconUrl>-->
+    <licenseUrl>https://github.com/pyranja/profile/blob/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/pyranja/profile</projectSourceUrl>
+    <!--<docsUrl>At what url are the software docs located?</docsUrl>-->
+    <!--<mailingListUrl></mailingListUrl>-->
+    <bugTrackerUrl>https://github.com/pyranja/profile/issues</bugTrackerUrl>
+    <tags>py-profile admin</tags>
+    <summary>personal .dotfiles and ps scripts</summary>
+    <description>My personal .dotfiles and powershell scripts, provided as a chocolatey package.</description>
+    <!-- <releaseNotes>__REPLACE_OR_REMOVE__MarkDown_Okay</releaseNotes> -->
+    <!-- =============================== -->      
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+    <file src="py-ps\**" target="py-ps" />
+    <file src="dotfiles\**" target="dotfiles" />
+  </files>
+</package>
