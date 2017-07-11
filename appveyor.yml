@@ -30,9 +30,9 @@ deploy:
       appveyor_repo_tag: false
 
   - provider: NuGet
-    server: https://chocolatey.org/
+    server: https://api.bintray.com/nuget/pyranja/py-get
     api_key:
-      secure: ZtdZPdqvVtzPKmd8raL+K10y+1qbjqGSsarHTBH5hfV0Vu86sQF16gZzTR7xGIQv
+      secure: /EwVqeAku0ElP5+mpr8nYlRDPKgNAFMl35yV5RFmcObciYlgyIwzM2aJeLW4qbmj
     skip_symbols: true
     on:
       branch: master
