@@ -13,8 +13,8 @@ Describe "Install-PyProfile" {
         $PROFILE = "TestDrive:/profile/default_profile.ps1" # avoid overwriting real profile file
         New-Item -ItemType Directory -Path TestDrive:\source,TestDrive:\target
         # create empty distribution structure for simplicity
-        "dotfiles","py-ps" | ForEach-Object { New-Item -ItemType Directory -Path "TestDrive:\source\$_" }
-        New-Item -Type File -Path TestDrive:\source\ProfileLoader.ps1
+        "dotfiles","py-ps","tools" | ForEach-Object { New-Item -ItemType Directory -Path "TestDrive:\source\$_" }
+        New-Item -Type File -Path TestDrive:\source\tools\ProfileLoader.ps1
     }
 
     AfterEach {
@@ -54,7 +54,7 @@ Describe "Install-PyProfile" {
     }
 
     it "copies the module loader to default profile location" {
-        Set-Content -Path TestDrive:\source\ProfileLoader.ps1 "test"
+        Set-Content -Path TestDrive:\source\tools\ProfileLoader.ps1 "test"
 
         __RunInstaller
 
@@ -63,7 +63,7 @@ Describe "Install-PyProfile" {
     }
 
     it "overwrites existing profile" {
-        Set-Content -Path TestDrive:\source\ProfileLoader.ps1 "test"
+        Set-Content -Path TestDrive:\source\tools\ProfileLoader.ps1 "test"
         New-Item -Type File -Path $PROFILE -Value "former profile content" -Force
 
         __RunInstaller
