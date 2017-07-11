@@ -16,7 +16,10 @@
 
 [alias]
   co = checkout
+  st = status -sb
+  ls = log --pretty=format:"%C(yellow)%h%Creset %s %Cred%d" --decorate
   tree = log --graph --all --oneline --decorate
+  unstage = reset HEAD --
 
 [url "https://github.com/"]
   insteadOf = gh:
