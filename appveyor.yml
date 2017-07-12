@@ -28,7 +28,8 @@ artifacts:
   - path: ./**/*.nupkg
   - path: ./**/*.zip
 
-deploy_script:
+# use after_deploy phase as deploy_script blocks provider deployments
+after_deploy:
   - ps: Invoke-Build Publish -Version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
 
 deploy:
