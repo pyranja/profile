@@ -62,7 +62,7 @@ task Assemble-PyPs -Inputs { Get-ChildItem -Path $module_name -Recurse -File } -
 }
 
 # Synopsis: push powershell module to PSGallery
-task Publish-PyPs -If { ShouldPublish } Assemble-PyPs, {
+task Publish-PyPs Assemble-PyPs, {
     assert($PsGalleryApiKey) "PSGALLERY_API_KEY not set"
 
     $artifact = $(Join-Path -Path $workspace -ChildPath $module_name -Resolve)
@@ -90,7 +90,7 @@ task Assemble-Profile -Inputs { Get-ChildItem $profile_contents -Recurse -File }
 }
 
 # Synopsis: push nuget pkg to bintray feed
-task Publish-Profile -If { ShouldPublish } Assemble-Profile, {
+task Publish-Profile Assemble-Profile, {
     assert($BintrayApiKey) "BINTRAY_API_KEY not set"
 
     # ignore error on add as it may already be configured
@@ -103,7 +103,7 @@ task Publish-Profile -If { ShouldPublish } Assemble-Profile, {
 task Assemble Assemble-Profile,Assemble-PyPs, {}
 
 # Synopsis: meta task to exec each individual publish
-task Publish Publish-PyPs,Publish-Profile, {}
+task Publish -If { ShouldPublish } Publish-PyPs,Publish-Profile, {}
 
 # Synopsis: run unit tests
 task Test Init, {
@@ -158,5 +158,17 @@ function ShouldPublish {
     Check if a release build is running
     #>
     $isReleaseBuild = ($Env:APPVEYOR -eq 'True') -and ($Env:APPVEYOR_REPO_BRANCH -eq 'master') -and ($Env:APPVEYOR_PULL_REQUEST_NUMBER -eq 0)
-    ($ForcePublish) -or ($isReleaseBuild)
+    
+    if (-not $isReleaseBuild) {
+        $message = @"
+Skipping publish based on environment 
+    APPVEYOR == <$Env:APPVEYOR>
+    APPVEYOR_REPO_BRANCH == <$Env:APPVEYOR_REPO_BRANCH>
+    APPVEYOR_PULL_REQUEST_NUMBER == <$Env:APPVEYOR_PULL_REQUEST_NUMBER>
+
+"@
+        Write-Warning $message
+    }
+
+    $ForcePublish -or $isReleaseBuild
 }
