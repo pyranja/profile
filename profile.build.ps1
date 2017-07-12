@@ -50,7 +50,7 @@ task Assemble Init, {
         -Author 'Chris Borckholder' `
         -Copyright 'This is free and unencumbered software released into the public domain.' `
         -Description 'Personal dotfiles and utilities.' `
-        -PowerShellVersion '3.0' `
+        -PowerShellVersion '5.0' `
         -DefaultCommandPrefix 'Py' `
         -NestedModules $(Get-ChildItem "$assembly\$module_name" -Recurse -Include *.ps1 | ForEach-Object { $_.Name }) `
         -CmdletsToExport *-* `
