@@ -6,8 +6,81 @@
 #Requires -Version 5
 Set-StrictMode -Version Latest
 
-# project skeleton is installed besides module
-$ProjectSkeletonLocation = $(Join-Path $(Split-Path -Parent $PSCommandPath) project-skeleton)
+# config files embedded, to simplify packaging as a ps module
+$Template_editorconfig = @"
+# http://editorconfig.org
+
+root = true
+
+[*]
+# force unix endings and utf-8 everywhere
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+indent_style = space
+indent_size = 2
+
+[Makefile]
+# tabs are syntax elements in make
+indent_style = tab
+
+[*.py]
+# PEP 8 mandates multiples of four as indentation
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+[*.{bat,ps1,psm1,psd1,ps1xml}]
+end_of_line = crlf
+
+"@
+
+$Template_gitattributes = @"
+# enable git auto handling
+* text=auto
+
+# force endings for some platform specific files
+*.md      eol=lf
+*.sh      eol=lf
+*.xml     eol=lf
+*.json    eol=lf
+*.sql     eol=lf
+*.yaml    eol=lf
+*.yml     eol=lf
+
+*.ps1     eol=crlf
+*.psm1    eol=crlf
+*.psd1    eol=crlf
+*.ps1xml  eol=crlf
+*.bat     eol=crlf
+
+*.pdf     -text
+
+"@
+
+$Template_gitignore = @"
+# intellij #
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# eclipse #
+.settings/
+.project
+.classpath
+
+# vagrant #
+.vagrant
+
+# osx #
+.DS_Store
+
+"@
 
 function Initialize-Project {
     <#
@@ -26,9 +99,25 @@ function Initialize-Project {
     Push-Location -StackName __Initialize-Project__ $Path
     try {
         git init
-        Copy-Item -Recurse "$ProjectSkeletonLocation\*"
+        __DumpToUnixFile $Template_editorconfig '.editorconfig'
+        __DumpToUnixFile $Template_gitattributes '.gitattributes'
+        __DumpToUnixFile $Template_gitignore '.gitignore'
         git add .
     } finally {
         Pop-Location -StackName __Initialize-Project__
     }
+}
+
+function __DumpToUnixFile($content, [string] $target) {
+    <#
+    .SYNOPSIS
+    write given string to target file using utf8 encoding and LF line endings. 
+     
+    .PARAMETER content
+    to be written to file
+    
+    .PARAMETER target
+    name of target file
+    #>
+    $content | ForEach-Object { $_.Replace("`r`n","`n") } | Out-File -FilePath $target -Encoding utf8 -NoNewline
 }
