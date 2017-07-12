@@ -94,9 +94,10 @@ task Publish-Profile Assemble-Profile, {
     assert($BintrayApiKey) "BINTRAY_API_KEY not set"
 
     # ignore error on add as it may already be configured
+    nuget sources Remove -Name bintray -NonInteractive
     nuget sources Add -Name bintray -Source https://api.bintray.com/nuget/pyranja/py-get -UserName pyranja -Password $BintrayApiKey -NonInteractive
-    $spec = Join-Path $workspace "$package_name\$package_name.nuspec" -Resolve
-    exec { nuget push $spec -Source https://api.bintray.com/nuget/pyranja/py-get -ApiKey "pyranja:$BintrayApiKey" -NonInteractive }
+    $artifact = Join-Path $workspace "$package_name.$Version.nupkg" -Resolve
+    exec { nuget push $artifact -Source bintray -ApiKey "pyranja:$BintrayApiKey" -NoSymbols -NonInteractive }
 }
 
 # Synopsis: meta task to exec each individual assemble
