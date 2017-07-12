@@ -68,19 +68,11 @@ function __InstallPyPs {
     [CmdletBinding()]
     Param()
 
-    $Source = (Join-Path $SourceBase py-ps)
-    $Target = (Join-Path $TargetBase Documents\WindowsPowerShell\Modules)
-
-    __Report "py-ps module" $Source $Target
-
-    If (Test-Path $Target) {
-        Remove-Item -Path $(Join-Path $Target py-ps) -Recurse -Force -ErrorAction SilentlyContinue
-        Copy-Item -Path $Source -Destination $Target -Recurse -Force
-    } Else {
-        # avoid copying if module folder is not existing
-        # it may mess up the directory structure
-        Write-Warning "default module path not found ($Target) - skipping module installation"
-    }
+    Write-Verbose "installing py-ps module from PSGallery"
+    # install if missing, else skips
+    Install-Module -Verbose -Name "py-ps" -Repository PSGallery -Scope CurrentUser -ErrorAction SilentlyContinue
+    # ensure latest version installed
+    Update-Module -Verbose -Name "py-ps"
 }
 
 function __Report {
