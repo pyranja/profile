@@ -11,6 +11,8 @@ environment:
 
 # building tags triggers an infinite loop from github release tags
 skip_tags: true
+# avoid double builds on pull requests
+skip_branch_with_pr: true
 
 install:
   - ps: Install-Module InvokeBuild
