@@ -1,10 +1,6 @@
 <#
 .Synopsis
 	profile build script.
-
-.Description
-	TODO: Declare build script parameters as usual by param().
-	The parameters are specified for Invoke-Build on invoking.
 #>
 
 [CmdletBinding()]
@@ -15,7 +11,6 @@ param(
 #Requires -Version 5
 Set-StrictMode -Version "Latest"
 
-$package_name = 'py-profile'
 $workspace = $(Join-Path $PSScriptRoot "dist")
 
 task . Assemble, Test
@@ -30,42 +25,48 @@ task Init {
     New-Item -Path $workspace -ItemType Directory -Force | Out-Null
 }
 
-# Synopsis: prepare profile contents for packaging
-task Assemble Init, {
-    $assembly = (Join-Path $workspace $package_name)
-    Remove-Item -Path $assembly -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
-    New-Item -Path $assembly -ItemType Directory | Out-Null
-
-    # Assemble powershell module
+# Synopsis: assemble py-ps powershell module
+task Assemble-PyPs Init, {
     $module_name = 'py-ps'
-    $ModuleSources = (Join-Path $PSScriptRoot $module_name)
+    $target = Join-Path -Path $workspace -ChildPath $module_name
+    EnsureExistsAndEmpty $target
 
-    New-Item -Path "$assembly\$module_name" -ItemType Directory -Force | Out-Null
-    Get-ChildItem -Path $ModuleSources -Exclude *.Tests.* | Copy-Item -Recurse -Destination "$assembly\$module_name"
+    Get-ChildItem -Path $(Join-Path $PSScriptRoot $module_name) -Exclude *.Tests.* | Copy-Item -Recurse -Destination "$target"
 
     New-ModuleManifest `
-        -Path (Join-Path $assembly "$module_name\$module_name.psd1") `
+        -Path $(Join-Path $target "$module_name.psd1") `
         -ModuleVersion $version `
         -Guid 6d07c16c-3181-4844-9f4b-4d8a6a644634 `
         -Author 'Chris Borckholder' `
+        -CompanyName 'Personal' `
         -Copyright 'This is free and unencumbered software released into the public domain.' `
         -Description 'Personal dotfiles and utilities.' `
         -PowerShellVersion '5.0' `
         -DefaultCommandPrefix 'Py' `
-        -NestedModules $(Get-ChildItem "$assembly\$module_name" -Recurse -Include *.ps1 | ForEach-Object { $_.Name }) `
+        -NestedModules $(Get-ChildItem "$target" -Recurse -Include *.ps1 | ForEach-Object { $_.Name }) `
         -CmdletsToExport *-* `
         -FunctionsToExport *-* `
         -AliasesToExport '__none' `
         -VariablesToExport '__none'
-
-    # Copy non-shell resources
-    $tools = 'dotfiles', 'tools' | ForEach-Object { Join-Path -Path $PSScriptRoot -ChildPath $_ }
-    Copy-Item -Path $tools -Destination $assembly -Recurse -Exclude *.Tests.*
-    Copy-Item -Path 'py-profile.nuspec' -Destination $assembly
-
-    # package
-    choco pack $(Join-Path -Path $assembly -ChildPath 'py-profile.nuspec' -Resolve) --version=$version --out $workspace
 }
+
+# Synopsis: assemble profile nuget package
+task Assemble-Profile Init, {
+    $package_name = 'py-profile'
+    $target = Join-Path -Path $workspace -ChildPath $package_name
+    EnsureExistsAndEmpty $target
+
+    # gather contents in temp folder
+    $contents = 'dotfiles', 'tools' | ForEach-Object { Join-Path -Path $PSScriptRoot -ChildPath $_ -Resolve }
+    Copy-Item -Path $contents -Destination $target -Recurse -Exclude *.Tests.*
+    Copy-Item -Path 'py-profile.nuspec' -Destination $target
+
+    # package it
+    choco pack $(Join-Path -Path $target -ChildPath 'py-profile.nuspec' -Resolve) --version=$version --out $workspace
+}
+
+# Synopsis: meta task to exec each individual assemble
+task Assemble Assemble-Profile,Assemble-PyPs, {}
 
 # Synopsis: run unit tests
 task Test Init, {
@@ -101,4 +102,15 @@ function ReportTestResults {
     else {
         Write-Warning "APPVEYOR_JOB_ID not defined - skipping test result reporting"
     }
+}
+
+function EnsureExistsAndEmpty {
+    <#
+    .SYNOPSIS
+    ensure the given $target folder exists and is empty
+    #>
+    Param([string] $target)
+
+    Remove-Item -Path $target -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
+    New-Item -Path $target -ItemType Directory -Force | Out-Null
 }

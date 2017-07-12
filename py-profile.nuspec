@@ -27,8 +27,6 @@
     <!-- =============================== -->      
   </metadata>
   <files>
-    <file src="tools\**" target="tools" />
-    <file src="py-ps\**" target="py-ps" />
-    <file src="dotfiles\**" target="dotfiles" />
+    <file src="**\*" target="\" />
   </files>
 </package>
