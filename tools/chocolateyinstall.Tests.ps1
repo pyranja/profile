@@ -9,11 +9,14 @@ function __RunInstaller {
 
 Describe "Install-PyProfile" {
 
+    Mock -CommandName Install-Module -MockWith { return $true }
+    Mock -CommandName Update-Module -MockWith { return $true }
+
     BeforeEach {
         $PROFILE = "TestDrive:/profile/default_profile.ps1" # avoid overwriting real profile file
         New-Item -ItemType Directory -Path TestDrive:\source,TestDrive:\target
         # create empty distribution structure for simplicity
-        "dotfiles","py-ps","tools" | ForEach-Object { New-Item -ItemType Directory -Path "TestDrive:\source\$_" }
+        "dotfiles","tools" | ForEach-Object { New-Item -ItemType Directory -Path "TestDrive:\source\$_" }
         New-Item -Type File -Path TestDrive:\source\tools\ProfileLoader.ps1
     }
 
@@ -30,27 +33,11 @@ Describe "Install-PyProfile" {
         Get-Content TestDrive:\target\file.txt | Should Be "test"
     }
 
-    it "copies py-ps to existing default powershell module path" {
-        Set-Content -Path TestDrive:\source\py-ps\py-ps.ps1 -Value "test"
-        New-Item -ItemType Directory TestDrive:\target\Documents\WindowsPowerShell\Modules
-
+    it "installs py-ps module" {
         __RunInstaller
         
-        "TestDrive:\target\Documents\WindowsPowerShell\Modules\py-ps\py-ps.ps1" | Should Exist
-        Get-Content TestDrive:\target\Documents\WindowsPowerShell\Modules\py-ps\py-ps.ps1 | Should Be "test"
-    }
-
-    it "clears an existing py-ps module installation" {
-        New-Item -ItemType Directory TestDrive:\target\Documents\WindowsPowerShell\Modules\py-ps
-        Set-Content -Path TestDrive:\target\Documents\WindowsPowerShell\Modules\py-ps\old__py-ps.ps1 -Value "remove me"
-
-        __RunInstaller
-
-        "TestDrive:\target\Documents\WindowsPowerShell\Modules\py-ps\old__py-ps.ps1" | Should Not Exist
-    }
-
-    it "skips module installation if default powershell module path does not exist" {
-        { __RunInstaller -WarningAction Stop } | Should Throw "default module path not found"
+        Assert-MockCalled Install-Module -Times 1 -ParameterFilter { $Name -eq "py-ps" }
+        Assert-MockCalled Update-Module -Times 1 -ParameterFilter { $Name -eq "py-ps" }
     }
 
     it "copies the module loader to default profile location" {
