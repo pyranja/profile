@@ -157,8 +157,8 @@ function ShouldPublish {
     .SYNOPSIS
     Check if a release build is running
     #>
-    $isReleaseBuild = ($Env:APPVEYOR -eq 'True') -and ($Env:APPVEYOR_REPO_BRANCH -eq 'master') -and ($Env:APPVEYOR_PULL_REQUEST_NUMBER -eq 0)
-    
+    $isReleaseBuild = ($Env:APPVEYOR -eq 'True') -and ($Env:APPVEYOR_REPO_BRANCH -eq 'master') -and ($Env:APPVEYOR_PULL_REQUEST_NUMBER -eq '')
+
     if (-not $isReleaseBuild) {
         $message = @"
 Skipping publish based on environment 
