@@ -18,8 +18,8 @@ function main {
     [CmdletBinding()]
     Param()
 
-    __InstallDotfiles
     __InstallPyPs
+    __InstallDotfiles
     __InstallProfileLoader
 }
 
