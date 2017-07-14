@@ -101,7 +101,7 @@ task Assemble-Profile -Inputs { Get-ChildItem $profile_contents -Recurse -File }
     Copy-Item -Path 'py-profile.nuspec' -Destination $target
 
     # package it
-    choco pack $(Join-Path -Path $target -ChildPath 'py-profile.nuspec' -Resolve) --version=$Version --out $workspace
+    exec { choco pack $(Join-Path -Path $target -ChildPath 'py-profile.nuspec' -Resolve) --version=$Version --outputdirectory $workspace }
 }
 
 # Synopsis: push nuget pkg to bintray feed
