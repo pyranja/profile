@@ -17,12 +17,13 @@ skip_branch_with_pr: true
 install:
   - ps: Install-Module InvokeBuild
   - ps: Install-Module pester
+  - ps: Install-Module PSScriptAnalyzer
 
 build_script:
   - ps: Invoke-Build Clean, Assemble -Version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop
 
 test_script:
-  - ps: Invoke-Build CiTest -Version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Continue
+  - ps: Invoke-Build Verify -Version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Continue
 
 artifacts:
   - path: ./**/*.nupkg
