@@ -60,8 +60,10 @@ function Invoke-ExpressionAt {
 
 function __HandleSingleExpression {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingWriteHost", "")]
     Param([string]$Path, [string]$Command)
 
+    # text output is purely informational for user - do NOT use Write-Output
     Write-Host "`n$Path> $Command`n" -ForegroundColor Cyan
     Push-Location $Path -StackName invoke
     if ($?) {
@@ -77,6 +79,7 @@ function __HandleSingleExpression {
 
 function __ExecuteExpression {
     [CmdletBinding()]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "")]
     Param([string]$It)
 
     $Global:LASTEXITCODE = $null

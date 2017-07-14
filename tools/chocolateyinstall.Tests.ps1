@@ -13,6 +13,7 @@ Describe "Install-PyProfile" {
     Mock -CommandName Update-Module -MockWith { return $true }
 
     BeforeEach {
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
         $PROFILE = "TestDrive:/profile/default_profile.ps1" # avoid overwriting real profile file
         New-Item -ItemType Directory -Path TestDrive:\source,TestDrive:\target
         # create empty distribution structure for simplicity
