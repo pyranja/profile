@@ -18,7 +18,20 @@ $workspace = $(Join-Path $BuildRoot "dist")
 $module_name = 'py-ps'
 $package_name = 'py-profile'
 
-task . Test, Assemble
+### meta tasks
+
+task . Test, Analyze, Assemble
+
+# Synopsis: meta task to run unit tests and analysis during ci
+task Verify CiTest, CiAnalyze
+
+# Synopsis: meta task to exec each individual assemble
+task Assemble Assemble-Profile,Assemble-PyPs
+
+# Synopsis: meta task to exec each individual publish
+task Publish -If { ShouldPublish } Publish-PyPs,Publish-Profile
+
+### individual tasks
 
 # Synopsis: clear build output
 task Clean {
@@ -99,15 +112,32 @@ task Publish-Profile Assemble-Profile, {
     exec { nuget push $artifact -Source bintray -ApiKey "pyranja:$BintrayApiKey" -NoSymbols -NonInteractive }
 }
 
-# Synopsis: meta task to exec each individual assemble
-task Assemble Assemble-Profile,Assemble-PyPs, {}
-
-# Synopsis: meta task to exec each individual publish
-task Publish -If { ShouldPublish } Publish-PyPs,Publish-Profile, {}
+# Synopsis: run PSScriptAnalyzer
+task Analyze {
+    $module_name,'tools' | ForEach-Object { Invoke-ScriptAnalyzer -Path $(Join-Path $BuildRoot $_) -Recurse }
+}
 
 # Synopsis: run unit tests
 task Test Init, {
     Invoke-Pester -Strict 2>$null 3>$null
+}
+
+# Synopsis: run script analyzer with ci configuration
+task CiAnalyze {
+    Write-Host 'run PSScriptAnalyzer'
+    Add-AppveyorTest -Name 'PsScriptAnalyzer' -Outcome running
+    $analyzer_results = Get-Item -Path $module_name,'tools' | ForEach-Object { Invoke-ScriptAnalyzer -Path $_ -Recurse }
+
+    if ($analyzer_results) {
+        $results_text = $analyzer_results | Out-String
+        Write-Warning $results_text
+        Update-AppveyorTest -Name 'PsScriptAnalyzer' -Outcome Failed -ErrorMessage $results_text
+
+        throw 'PSScriptAnalyzer failed'
+    } else {
+        Write-Host 'PSScriptAnalyzer passed'
+        Update-AppveyorTest -Name 'PsScriptAnalyzer' -Outcome Passed
+    }
 }
 
 # Synopsis: run unit tests with ci configuration
