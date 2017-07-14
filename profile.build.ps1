@@ -85,6 +85,8 @@ task Publish-PyPs Assemble-PyPs, {
         -Path $artifact `
         -NuGetApiKey $PsGalleryApiKey `
         -Repository PSGallery `
+
+    Add-AppveyorMessage -Message "$module_name $Version published" -Category Information
 }
 
 $profile_contents = 'dotfiles', 'tools'
@@ -108,8 +110,10 @@ task Publish-Profile Assemble-Profile, {
 
     # ignore error on add as it may already be configured
     nuget sources Add -Name bintray -Source https://api.bintray.com/nuget/pyranja/py-get -UserName pyranja -Password $BintrayApiKey -Verbosity detailed -NonInteractive
-    $artifact = Join-Path $workspace "$package_name.$Version.nupkg" -Resolve
+    $nuget_filename = "$package_name.$Version.nupkg"
+    $artifact = Join-Path $workspace $nuget_filename -Resolve
     exec { nuget push $artifact -Source bintray -ApiKey "pyranja:$BintrayApiKey" -NoSymbols -NonInteractive }
+    Add-AppveyorMessage -Message "$nuget_filename published" -Category Information
 }
 
 # Synopsis: run PSScriptAnalyzer
@@ -129,11 +133,9 @@ task CiAnalyze {
     $analyzer_results = Get-Item -Path $module_name,'tools' | ForEach-Object { Invoke-ScriptAnalyzer -Path $_ -Recurse }
 
     if ($analyzer_results) {
-        $results_text = $analyzer_results | Out-String
-        Write-Warning $results_text
-        Update-AppveyorTest -Name 'PsScriptAnalyzer' -Outcome Failed -ErrorMessage $results_text
-
-        throw 'PSScriptAnalyzer failed'
+        Update-AppveyorTest -Name 'PsScriptAnalyzer' -Outcome Failed -ErrorMessage $($analyzer_results | Out-String)
+        Add-AppveyorMessage -Message 'task CiAnalyze failed' -Category Error
+        Throw 'PSScriptAnalyzer failed'
     } else {
         Write-Host 'PSScriptAnalyzer passed'
         Update-AppveyorTest -Name 'PsScriptAnalyzer' -Outcome Passed
@@ -150,7 +152,8 @@ task CiTest Init, {
     ReportTestResults $results
 
     If (-not $success) {
-        Throw "test run failed"
+        Add-AppveyorMessage -Message 'task CiTest failed' -Category Error
+        Throw 'Pester unit test run failed'
     }
 }
 
