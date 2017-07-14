@@ -22,6 +22,12 @@ $package_name = 'py-profile'
 
 task . Test, Analyze, Assemble
 
+# Synopsis: install build dependencies if necessary
+task Bootstrap {
+    Install-Module Pester
+    Install-Module PSScriptAnalyzer
+}
+
 # Synopsis: meta task to run unit tests and analysis during ci
 task Verify CiTest, CiAnalyze
 

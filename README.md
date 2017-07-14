@@ -33,3 +33,14 @@ To install just the powershell scripts, use the built-in module manager
 
     Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
     Install-Module py-ps
+
+## Contributing
+
+This project uses the [InvokeBuild](https://github.com/nightroman/Invoke-Build) build system. To get started clone or fork the repository and run:
+
+    # install build system
+    Install-Module Invoke-Build
+    # install additional build dependencies
+    Invoke-Build Bootstrap
+    # run default build tasks
+    Invoke-Build
