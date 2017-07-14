@@ -14,7 +14,7 @@ param(
 #Requires -Version 5
 Set-StrictMode -Version "Latest"
 
-$workspace = $(Join-Path $PSScriptRoot "dist")
+$workspace = $(Join-Path $BuildRoot "dist")
 $module_name = 'py-ps'
 $package_name = 'py-profile'
 
