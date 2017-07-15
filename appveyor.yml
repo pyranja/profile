@@ -1,6 +1,6 @@
 # py-profile build
 
-version: 0.0.{build}
+version: 0.1.{build}
 platform: x64
 
 environment:
