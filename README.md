@@ -9,7 +9,7 @@ My personal .dotfiles and powershell scripts.
 
 ## Pre-requisites
 
-`py-profile` requires at least powershell version 5.0 and the [chocolatey](https://chocolatey.org/) client.
+`py-profile` requires at least [powershell](https://msdn.microsoft.com/en-us/powershell) version 5.0 and the [chocolatey](https://chocolatey.org/) client.
 
 ## Installation
 
