@@ -99,9 +99,9 @@ function Initialize-Project {
     Push-Location -StackName __Initialize-Project__ $Path
     try {
         git init
-        __DumpToUnixFile $Template_editorconfig '.editorconfig'
-        __DumpToUnixFile $Template_gitattributes '.gitattributes'
-        __DumpToUnixFile $Template_gitignore '.gitignore'
+        __DumpToUnixFile $Template_editorconfig $(Join-Path $Path '.editorconfig')
+        __DumpToUnixFile $Template_gitattributes $(Join-Path $Path '.gitattributes')
+        __DumpToUnixFile $Template_gitignore $(Join-Path $Path '.gitignore')
         git add .
     } finally {
         Pop-Location -StackName __Initialize-Project__
@@ -111,7 +111,7 @@ function Initialize-Project {
 function __DumpToUnixFile($content, [string] $target) {
     <#
     .SYNOPSIS
-    write given string to target file using utf8 encoding and LF line endings. 
+    write given string to target file using utf8 encoding without BOM and LF line endings.
      
     .PARAMETER content
     to be written to file
@@ -119,5 +119,8 @@ function __DumpToUnixFile($content, [string] $target) {
     .PARAMETER target
     name of target file
     #>
-    $content | ForEach-Object { $_.Replace("`r`n","`n") } | Out-File -FilePath $target -Encoding utf8 -NoNewline
+    $encoding = New-Object System.Text.UTF8Encoding($False)
+    $content | ForEach-Object { $_.Replace("`r`n","`n") } | ForEach-Object {
+        [System.IO.File]::WriteAllText($target, $_, $encoding)
+    }
 }
