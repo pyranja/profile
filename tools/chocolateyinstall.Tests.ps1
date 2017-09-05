@@ -34,6 +34,12 @@ Describe "Install-PyProfile" {
         Get-Content TestDrive:\target\file.txt | Should Be "test"
     }
 
+    it "creates .gitconfig in target dir if it is not present" {
+        __RunInstaller
+
+        "TestDrive:\target\.gitconfig" | Should Exist
+    }
+
     it "installs py-ps module" {
         __RunInstaller
         
