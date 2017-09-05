@@ -30,6 +30,12 @@ function __InstallDotfiles {
     $Source = (Join-Path $SourceBase dotfiles\*)
     $Target = $TargetBase
 
+    $gitUserConfig = $(Join-Path $Target ".gitconfig")
+    if (-not (Test-Path $gitUserConfig)) {
+        Write-Verbose "generating empty .gitconfig"
+        New-Item -ItemType File $gitUserConfig
+    }
+
     __Report "dotfiles" $Source $Target
 
     Copy-Item -Path $Source -Destination $Target -Recurse -Force
