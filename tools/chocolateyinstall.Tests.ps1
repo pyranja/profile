@@ -8,9 +8,11 @@ function __RunInstaller {
 }
 
 Describe "Install-PyProfile" {
-
+    # global mocks for dangerous powershellget commands
     Mock -CommandName Install-Module -MockWith { return $true }
     Mock -CommandName Update-Module -MockWith { return $true }
+    Mock -CommandName Uninstall-Module -MockWith { return $true }
+    Mock -CommandName Get-InstalledModule -MockWith { return [PSCustomObject]@{Version = 99; Name = "fake"} }
 
     BeforeEach {
         [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "")]
@@ -43,8 +45,24 @@ Describe "Install-PyProfile" {
     it "installs py-ps module" {
         __RunInstaller
         
+        # calls install, then update to avoid explicit checking whether py-ps is installed
         Assert-MockCalled Install-Module -Times 1 -ParameterFilter { $Name -eq "py-ps" }
         Assert-MockCalled Update-Module -Times 1 -ParameterFilter { $Name -eq "py-ps" }
+    }
+
+    it "removes older py-ps versions" {
+        # must create mock objects in closure to avoid ref errors in following tests
+        Mock -CommandName Get-InstalledModule `
+            -ParameterFilter { $Name -eq "py-ps" -and -not $AllVersions } `
+            -MockWith { return [PSCustomObject]@{Version=2; Name="py-ps"} }
+        Mock -CommandName Get-InstalledModule `
+            -ParameterFilter { $Name -eq "py-ps" -and $AllVersions } `
+            -MockWith { return @([PSCustomObject]@{Version=1; Name="py-ps"}, [PSCustomObject]@{Version=2; Name="py-ps"}) }
+
+        __RunInstaller
+
+        Assert-MockCalled Uninstall-Module -Times 1 `
+            -ParameterFilter { $InputObject.Name -eq "py-ps" -and $InputObject.Version -eq "1" }
     }
 
     it "copies the module loader to default profile location" {
