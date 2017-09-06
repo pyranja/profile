@@ -24,8 +24,8 @@ task . Test, Analyze, Assemble
 
 # Synopsis: install build dependencies if necessary
 task Bootstrap {
-    Install-Module Pester
-    Install-Module PSScriptAnalyzer
+    Install-Module Pester -Verbose -MinimumVersion 3.4.4 -SkipPublisherCheck -Force
+    Install-Module PSScriptAnalyzer -Verbose -MinimumVersion 1.15.0 -Force
 }
 
 # Synopsis: meta task to run unit tests and analysis during ci
