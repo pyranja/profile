@@ -79,6 +79,9 @@ function __InstallPyPs {
     Install-Module -Verbose -Name "py-ps" -Repository PSGallery -Scope CurrentUser -ErrorAction SilentlyContinue
     # ensure latest version installed
     Update-Module -Verbose -Name "py-ps"
+    # remove deprecated versions
+    $latest = Get-InstalledModule "py-ps"
+    Get-InstalledModule "py-ps" -AllVersions | Where-Object { $_.Version -ne $latest.Version } | Uninstall-Module
 }
 
 function __Report {
