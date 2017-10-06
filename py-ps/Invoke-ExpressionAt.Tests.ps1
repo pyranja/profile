@@ -5,6 +5,9 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
+# prevent -Confirm prompts
+$script:ConfirmPreference = [System.Management.Automation.ConfirmImpact]::None
+
 # save invocation location to restore it after test runs
 $origin = Get-Location
 # transient folder to be used in tests
@@ -123,6 +126,8 @@ Describe "Invoke-ExpressionAt" {
     
     Context "Invoke-SpreadExpression" {
         It "fails if no .spread found" {
+            Set-Location TestDrive:\
+
             { Invoke-SpreadExpression Get-Location } | Should Throw "Cannot find path"
         }
 
@@ -145,5 +150,93 @@ Describe "Invoke-ExpressionAt" {
             $actual | Should FileContentMatch "test"
             $actual | Should FileContentMatch "more"
         }
+    }
+}
+
+Describe "Set-SpreadFile" {
+    BeforeEach {
+        Remove-Item -Recurse TestDrive:\*
+    }
+
+    $origin = Get-Location
+
+    AfterEach {
+        Set-Location $origin
+        Remove-Item -Recurse TestDrive:\*
+    }
+
+    It "creates a .spread file" {
+        Set-SpreadFile -Path TestDrive:\
+
+        "TestDrive:\.spread" | Should Exist
+    }
+
+    It "creates an empty spread file if no sub directories exist" {
+        Set-SpreadFile -Path TestDrive:\
+
+        Get-Content "TestDrive:\.spread" | Should BeNullOrEmpty
+    }
+
+    It "includes all sub directories in created file" {
+        @('first', 'second') | ForEach-Object { New-Item -ItemType Directory -Path "TestDrive:\$_" }
+
+        Set-SpreadFile -Path TestDrive:\
+
+        @(Get-Content "TestDrive:\.spread").Count | Should Be 2
+        "TestDrive:\.spread" | Should FileContentMatch "first"
+        "TestDrive:\.spread" | Should FileContentMatch "second"
+    }
+
+    It "ignores child items which are files" {
+        @('first', 'second') | ForEach-Object { New-Item -ItemType File -Path "TestDrive:\$_" }
+
+        Set-SpreadFile -Path TestDrive:\
+
+        Get-Content "TestDrive:\.spread" | Should BeNullOrEmpty
+    }
+
+    It "correctly handles mixed child content" {
+        New-Item -ItemType Directory -Path TestDrive:\folder
+        New-Item -ItemType File -Path TestDrive:\file
+
+        Set-SpreadFile -Path TestDrive:\
+
+        @(Get-Content "TestDrive:\.spread").Count | Should Be 1
+        "TestDrive:\.spread" | Should FileContentMatch "folder"
+        "TestDrive:\.spread" | Should Not FileContentMatch "file"
+    }
+
+    It "uses current location as default" {
+        New-Item -ItemType Directory -Path TestDrive:\iamhere
+        New-Item -ItemType Directory -Path TestDrive:\iamhere\folder
+        New-Item -ItemType File -Path TestDrive:\iamhere\file
+
+        Set-Location TestDrive:\iamhere
+        Set-SpreadFile
+
+        @(Get-Content "TestDrive:\iamhere\.spread").Count | Should Be 1
+        "TestDrive:\iamhere\.spread" | Should FileContentMatch "folder"
+        "TestDrive:\iamhere\.spread" | Should Not FileContentMatch "file"
+
+        "TestDrive:\.spread" | Should Not Exist
+    }
+
+    It "does nothing when called with -WhatIf" {
+        Set-SpreadFile -Path TestDrive:\ -WhatIf
+
+        "TestDrive:\.spread" | Should Not Exist
+    }
+
+    It "overwrite existing .spread file" {
+        @("old", "older") | Set-Content TestDrive:\.spread
+        "TestDrive:\.spread" | Should Exist
+
+        New-Item -ItemType Directory -Path TestDrive:\new
+        Set-SpreadFile -Path TestDrive:\
+
+        @(Get-Content "TestDrive:\.spread").Count | Should Be 1
+        "TestDrive:\.spread" | Should FileContentMatch "new"
+        "TestDrive:\.spread" | Should Not FileContentMatch "old"
+        "TestDrive:\.spread" | Should Not FileContentMatch "older"
     }
 }

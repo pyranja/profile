@@ -6,6 +6,30 @@
 #Requires -Version 5
 Set-StrictMode -Version Latest
 
+function Set-SpreadFile {
+    <#
+    .SYNOPSIS
+        Create or update a .spread file containing all child directories.
+
+    .DESCRIPTION
+        Bootstrap or update a .spread file to be used with
+        Invoke-SpreadExpression in the target folder. By default all sub
+        directories are included in the .spread file.
+
+    .PARAMETER Path
+        Path where the .spread file should be created, defaults to the current
+        location.
+    #>
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact=[System.Management.Automation.ConfirmImpact]::Medium)]
+    Param([Parameter(Mandatory=$false)][string]$Path = $(Get-Location))
+
+    $Target = $(Join-Path $Path '.spread')
+
+    If ($PSCmdlet.ShouldProcess($Target)) {
+        Get-ChildItem -Path $Path -Name -Directory > $Target
+    }
+}
+
 function Invoke-SpreadExpression {
     <#
     .SYNOPSIS
