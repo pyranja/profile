@@ -2,6 +2,8 @@
 
 version: 0.1.{build}
 platform: x64
+# use latest powershell version
+image: Visual Studio 2017
 
 environment:
   BINTRAY_API_KEY:
@@ -15,9 +17,8 @@ skip_tags: true
 skip_branch_with_pr: true
 
 install:
-  - ps: Install-Module InvokeBuild
-  - ps: Install-Module pester
-  - ps: Install-Module PSScriptAnalyzer
+  - ps: Install-Module InvokeBuild -Force -Scope CurrentUser
+  - ps: Invoke-Build Bootstrap
 
 build_script:
   - ps: Invoke-Build Clean, Assemble -Version $Env:APPVEYOR_BUILD_VERSION -ErrorAction Stop

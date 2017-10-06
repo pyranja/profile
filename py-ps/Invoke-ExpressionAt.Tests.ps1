@@ -132,8 +132,8 @@ Describe "Invoke-ExpressionAt" {
             $(Join-Path $cwd "one"),$(Join-Path $cwd "two") | Out-File $config
             Get-Content $config | ForEach-Object { New-Item -ItemType Directory -Path $_ -Force }
             $(Invoke-SpreadExpression -PathFile $config Get-Item .).Name | Out-File $actual
-            $actual | Should Contain "one"
-            $actual | Should Contain "two"
+            $actual | Should FileContentMatch "one"
+            $actual | Should FileContentMatch "two"
         }
 
         It "executes all commands from pipeline" {
@@ -142,8 +142,8 @@ Describe "Invoke-ExpressionAt" {
             $cwd | Out-File $config
             Get-Content $config | ForEach-Object { New-Item -ItemType Directory -Path $_ -Force }
             "Write-Output test","Write-Output more" | Invoke-SpreadExpression -PathFile $config | Out-File $actual
-            $actual | Should Contain "test"
-            $actual | Should Contain "more"
+            $actual | Should FileContentMatch "test"
+            $actual | Should FileContentMatch "more"
         }
     }
 }
