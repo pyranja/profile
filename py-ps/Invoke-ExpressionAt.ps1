@@ -44,12 +44,22 @@ function Invoke-SpreadExpression {
     .PARAMETER PathFile
         Override the source file for target paths.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName='IMPLICIT_SPREAD_PATH')]
     Param([Parameter(Mandatory=$true, Position=0, ValueFromPipeline=$true, ValueFromRemainingArguments=$true)][string]$Command,
-          [Parameter(Mandatory=$false)][string]$PathFile = './.spread')
+          [Parameter(ParameterSetName='EXPLICIT_SPREAD_PATH',Mandatory=$true)][string]$PathFile)
 
     Begin {
-        $Paths = $(Get-Content -ErrorAction Stop $PathFile)
+        switch ($PSCmdlet.ParameterSetName) {
+            "EXPLICIT_SPREAD_PATH" { $Paths = (Get-Content -ErrorAction Stop $PathFile) }
+            "IMPLICIT_SPREAD_PATH" {
+                If (Test-Path '.\.spread') {
+                    $Paths = (Get-Content -ErrorAction Stop '.\.spread')
+                } Else {
+                    $Paths = (Get-ChildItem -Name -Directory)
+                }
+            }
+            default { Throw "Illegal parameter set $PSCmdlet.ParameterSetName" }
+        }
     }
 
     Process {
