@@ -125,10 +125,29 @@ Describe "Invoke-ExpressionAt" {
 
     
     Context "Invoke-SpreadExpression" {
-        It "fails if no .spread found" {
-            Set-Location TestDrive:\
+        It "fails if no .spread found at explicitly set path" {
+            { Invoke-SpreadExpression -PathFile TestDrive:\.spread Get-Location } | Should Throw "Cannot find path"
+        }
 
-            { Invoke-SpreadExpression Get-Location } | Should Throw "Cannot find path"
+        It "executes command in each child directory if no .spread file present" {
+            @("first", "second") | ForEach-Object { New-Item -ItemType Directory -Path "$cwd\$_" }
+
+            Set-Location $cwd
+            $result = [string]@(Invoke-SpreadExpression Get-Item .)
+
+            $result | Should Match "first"
+            $result | Should Match "second"
+        }
+
+        It "executes command in each child directory from implicit .spread file" {
+            @("first", "second") | ForEach-Object { New-Item -ItemType Directory -Path "$cwd\$_" }
+            "first" | Set-Content $cwd\.spread
+
+            Set-Location $cwd
+            $result = [string]@(Invoke-SpreadExpression Get-Item .)
+
+            $result | Should Match "first"
+            $result | Should Not Match "second"
         }
 
         It "executes command in each path defined in .spread" {
@@ -136,7 +155,9 @@ Describe "Invoke-ExpressionAt" {
             $actual = $(Join-Path $cwd "result")
             $(Join-Path $cwd "one"),$(Join-Path $cwd "two") | Out-File $config
             Get-Content $config | ForEach-Object { New-Item -ItemType Directory -Path $_ -Force }
+
             $(Invoke-SpreadExpression -PathFile $config Get-Item .).Name | Out-File $actual
+
             $actual | Should FileContentMatch "one"
             $actual | Should FileContentMatch "two"
         }
@@ -146,7 +167,9 @@ Describe "Invoke-ExpressionAt" {
             $actual = $(Join-Path $cwd "result")
             $cwd | Out-File $config
             Get-Content $config | ForEach-Object { New-Item -ItemType Directory -Path $_ -Force }
+
             "Write-Output test","Write-Output more" | Invoke-SpreadExpression -PathFile $config | Out-File $actual
+
             $actual | Should FileContentMatch "test"
             $actual | Should FileContentMatch "more"
         }
