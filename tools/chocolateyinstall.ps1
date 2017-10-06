@@ -5,7 +5,7 @@
     'py-profile' includes a powershell module with command line helpers and a
     set of default config files.
 #>
-[CmdletBinding(SupportsShouldProcess, ConfirmImpact='High')]
+[CmdletBinding(SupportsShouldProcess, ConfirmImpact=[System.Management.Automation.ConfirmImpact]::High)]
 Param(
     [Parameter(Mandatory=$False)][string]$SourceBase = (Join-Path $PSScriptRoot '..' -Resolve),
     [Parameter(Mandatory=$False)][string]$TargetBase = (Resolve-Path ~)
@@ -42,7 +42,7 @@ function __InstallDotfiles {
 }
 
 function __InstallProfileLoader {
-    [CmdletBinding(SupportsShouldProcess, ConfirmImpact='High')]
+    [CmdletBinding(SupportsShouldProcess, ConfirmImpact=[System.Management.Automation.ConfirmImpact]::High)]
     Param()
 
     $Source = (Join-Path $SourceBase tools\ProfileLoader.ps1)
